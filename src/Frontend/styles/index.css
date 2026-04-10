@@ -1,5 +1,6 @@
 :root { --bs-primary: #6f42c1; } /* morado */
 
+/* Revisado y mejorado según buenas prácticas del proyecto */
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -21,7 +22,8 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
-a:hover {
+
+ga:hover {
   color: #535bf2;
 }
 
@@ -38,6 +40,15 @@ h1 {
   line-height: 1.1;
 }
 
+group {
+  display: flex;
+  align-items: center;
+}
+
+group button {
+  margin-right: 10px;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -49,9 +60,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+
+group button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
