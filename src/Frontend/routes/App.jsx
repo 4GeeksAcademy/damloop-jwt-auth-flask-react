@@ -5,25 +5,31 @@ import Login from "../pages/Login";
 import Private from "../pages/Private";
 
 import { ProtectedRoute } from "./ProtectedRoute";
+import { AuthProvider } from "../context/authContext";
+import Navbar from "../components/Navbar";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Navbar />
 
-        <Route
-          path="/private"
-          element={
-            <ProtectedRoute>
-              <Private />
-            </ProtectedRoute>
-          }
-        />
+        <Routes>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
 
-        <Route path="/" element={<h1>Home</h1>} />
-      </Routes>
-    </BrowserRouter>
+          <Route
+            path="/private"
+            element={
+              <ProtectedRoute>
+                <Private />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="/" element={<h1>Home</h1>} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }

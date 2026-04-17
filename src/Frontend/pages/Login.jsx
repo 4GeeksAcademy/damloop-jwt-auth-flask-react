@@ -1,40 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
-      const resp = await fetch(
-        "https://solid-computing-machine-wwrr99v45ppc5g9w-5000.app.github.dev/api/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+    const result = await login(email, password);
 
-      const data = await resp.json();
-
-      if (!resp.ok) {
-        alert(data.msg || "Credenciales incorrectas");
-        return;
-      }
-
-      // Guardar token
-      sessionStorage.setItem("token", data.access_token);
-
-      // Redirigir
-      navigate("/private");
-    } catch (error) {
-      console.error(error);
-      alert("Error de conexión con el servidor");
+    if (!result.success) {
+      alert(result.message || "Credenciales incorrectas");
+      return;
     }
+
+    navigate("/private");
   };
 
   return (

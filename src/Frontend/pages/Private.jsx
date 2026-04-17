@@ -1,30 +1,36 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import { useAuth } from "../context/authContext";
+
+const API_URL = "https://solid-computing-machine-wwrr99v45ppc5g9w-5000.app.github.dev/api";
 
 export default function Private() {
-  const [me, setMe] = useState(null);
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { token, logout } = useAuth();
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
-    if (!token) return navigate('/login', { replace: true });
+    if (!token) {
+      navigate("/login", { replace: true });
+      return;
+    }
 
-    fetch("https://solid-computing-machine-wwrr99v45ppc5g9w-5000.app.github.dev/api/private", {
-      headers: { Authorization: `Bearer ${token}` }
+    fetch(`${API_URL}/private`, {
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {
-        if (!res.ok) throw new Error('Token inválido o expirado');
+        if (!res.ok) throw new Error("Token inválido o expirado");
         const data = await res.json();
-        setMe(data);
+        setMessage(data.msg);
       })
       .catch((err) => {
         setError(err.message);
-        sessionStorage.removeItem('token');
-        navigate('/login', { replace: true });
+        logout();
+        navigate("/login", { replace: true });
       });
-  }, [navigate]);
+  }, [token, logout, navigate]);
 
   return (
     <>
@@ -34,9 +40,9 @@ export default function Private() {
           <div className="card-body">
             <h2 className="h4">Zona privada</h2>
 
-            {me && (
+            {message && (
               <p className="mb-0">
-                Hola, <strong>{me.user_id}</strong>. ¡Acceso concedido!
+                <strong>{message}</strong>
               </p>
             )}
 

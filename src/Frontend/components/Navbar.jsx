@@ -1,12 +1,13 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const token = sessionStorage.getItem('token');
+  const { isAuthenticated, logout } = useAuth();
 
-  const logout = () => {
-    sessionStorage.removeItem('token');
-    navigate('/login');
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
   return (
@@ -14,29 +15,44 @@ export default function Navbar() {
       <div className="container-fluid">
         <Link className="navbar-brand fw-bold" to="/">JWT Demo</Link>
 
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
-                aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#nav"
+          aria-controls="nav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
           <span className="navbar-toggler-icon" />
         </button>
 
         <div className="collapse navbar-collapse" id="nav">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item"><NavLink className="nav-link" to="/">Home</NavLink></li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/">Home</NavLink>
+            </li>
 
-            {!token && (
+            {!isAuthenticated && (
               <>
-                <li className="nav-item"><NavLink className="nav-link" to="/signup">Signup</NavLink></li>
-                <li className="nav-item"><NavLink className="nav-link" to="/login">Login</NavLink></li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/signup">Signup</NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/login">Login</NavLink>
+                </li>
               </>
             )}
 
-            {token && (
-              <li className="nav-item"><NavLink className="nav-link" to="/private">Private</NavLink></li>
+            {isAuthenticated && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/private">Private</NavLink>
+              </li>
             )}
           </ul>
 
-          {token && (
-            <button className="btn btn-outline-danger" onClick={logout}>
+          {isAuthenticated && (
+            <button className="btn btn-outline-danger" onClick={handleLogout}>
               Cerrar sesión
             </button>
           )}
